@@ -39,6 +39,7 @@ function updateCar() {
 function updateSky() {
 	var result = data.sky;
 
+	// @todo Remove this test code
 	result.x = Math.cos(tick * 10) * 10;
 
 	postMessage({obj: 'sky', payload: result});
