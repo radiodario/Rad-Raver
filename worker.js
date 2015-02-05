@@ -76,6 +76,7 @@ onmessage = function(e) {
 			break;
 
 		default:
+			// The only reason I'm using throw is because this project needs to be completed asap, so no soft logging, just hard and cruel errors
 			throw "Worker didn't understand your request with obj value of '" + e.data.obj + "'";
 	}
 
