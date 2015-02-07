@@ -4,7 +4,10 @@
 		canvas 		= $.getElementsByTagName('canvas')[0],
 		ctx 		= canvas.getContext('2d'),
 		worker 		= new Worker('./worker.js'),
-		resolution 	= 4; // The pixel size/step
+		resolution 	= 4, // The pixel size/step
+		tick;
+
+	ctx.webkitImageSmoothingEnabled = false;
 
 	function resize() {
 		// @todo Write code to calculate optimal pixel size/step
@@ -46,8 +49,35 @@
 
 	var nearRoad = function() {
 		this.data = {};
+		var bias = false;
+		var pieces = 40;
 
 		this.draw = function(canvas, ctx) {
+			if(tick % 2 === 0) bias = !bias;
+
+			for(var i=0; i<pieces; i++) {
+				if(bias) {
+					if(i % 2 === 0) ctx.fillStyle = '#ff0000';
+					else ctx.fillStyle = '#fff';
+				} else {
+					if(i % 2 === 0) ctx.fillStyle = '#fff';
+					else ctx.fillStyle = '#ff0000';
+				}
+
+				ctx.fillRect(canvas.width/6 - (20*i)/2 + this.data.x,
+					canvas.height/2 + (canvas.height/(pieces*2) * i),
+					canvas.width/1.5 + (20*i),
+					canvas.height/pieces
+				);
+
+				ctx.fillStyle = 'gray';
+
+				ctx.fillRect(canvas.width/6 + 10 - (20*i) /2  + this.data.x,
+					canvas.height/2 + (canvas.height/(pieces*2) * i),
+					canvas.width/1.5 + (20*i) - 20,
+					canvas.height/pieces
+				);
+			}
 
 		};
 
@@ -106,6 +136,22 @@
 
 	};
 
+	var ground = function() {
+		this.data = {};
+
+		this.draw = function(canvas, ctx) {
+
+			ctx.fillStyle = '#000';
+			ctx.fillRect(0, canvas.height/2, canvas.width, canvas.height/2);
+		
+		};
+
+		this.update = function() {
+			
+		};
+
+	};
+
 	var hud = function() {
 		this.data = {};
 
@@ -123,9 +169,12 @@
 	farRoad = new farRoad();
 	car = new car();
 	sky = new sky();
+	ground = new ground();
 	hud = new hud();
 
 	function loop() {
+		tick = Math.floor(new Date().getTime() / 1000);
+
 		sky.update();
 		farRoad.update();
 		nearRoad.update();
@@ -135,6 +184,7 @@
 		requestAnimationFrame(loop);
 
 		sky.draw(canvas, ctx);
+		ground.draw(canvas, ctx);
 		farRoad.draw(canvas, ctx);
 		nearRoad.draw(canvas, ctx);
 		car.draw(canvas, ctx);

@@ -21,6 +21,12 @@ tick;
 function updateNearRoad() {
 	var result = data.nearRoad;
 
+	// @todo Remove this test code
+	result.x = Math.cos(tick * 4) * 40;
+
+	postMessage({obj: 'nearRoad', payload: result});
+	data.nearRoad = result;
+
 	postMessage({obj: 'nearRoad', payload: result});
 }
 
@@ -40,7 +46,7 @@ function updateSky() {
 	var result = data.sky;
 
 	// @todo Remove this test code
-	result.x = Math.cos(tick * 10) * 10;
+	result.x = Math.cos(tick * 5) * 40;
 
 	postMessage({obj: 'sky', payload: result});
 	data.sky = result;
